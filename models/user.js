@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -11,18 +9,26 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       User.hasMany(models.Post, {
-        foreignKey:"userId",
-        as: "posteos"
-      })
+        foreignKey: "userId",
+        as: "posteos",
+      });
     }
   }
-  User.init({
-    nickname: {type:DataTypes.STRING, unique:true}, // se podria usar findOne para buscarlo. es mejor que la pk sea un numero y no un string.
-    email: {type:DataTypes.STRING, allowNull:false },
-    password: {type:DataTypes.STRING, allowNull:false}
-  }, {
-    sequelize,
-    modelName: 'User',
-  });
+  User.init(
+    {
+      nickname: { type: DataTypes.STRING, allowNull: false, unique: true }, // se podria usar findOne para buscarlo. es mejor que la pk sea un numero y no un string.
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: { isEmail: true },
+      },
+      password: { type: DataTypes.STRING, allowNull: false },
+    },
+    {
+      sequelize,
+      modelName: "User",
+    },
+  );
   return User;
 };
