@@ -12,6 +12,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "userId",
         as: "posteos",
       });
+      //  Un usuario puede hacer muchos comentarios
+      User.hasMany(models.Comment, {
+        foreignKey: "userId",
+        as: "comentarios",
+      });
     }
   }
   User.init(

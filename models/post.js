@@ -16,6 +16,17 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "postId",
         as: "imagenes",
       });
+      Post.hasMany(models.Comment, {
+        foreignKey: "postId",
+        as: "comentarios",
+      });
+      // Relación Muchos a Muchos con Tag
+      Post.belongsToMany(models.Tag, {
+        through: models.Post_Tags,
+        foreignKey: "postId",
+        otherKey: "tagId",
+        as: "etiquetas",
+      });
     }
   }
   Post.init(
