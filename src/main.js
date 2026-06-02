@@ -3,9 +3,11 @@ const app = express();
 const db = require("../models");
 const PORT = 3000;
 const usuariosRouter = require("../routes/usuarios.routes.js");
+const postsRouter = require("../routes/posts.routes.js");
 
 app.use(express.json());
 app.use("/usuarios", usuariosRouter);
+app.use("/posts", postsRouter);
 
 app.listen(PORT, async () => {
   await db.sequelize.sync();
