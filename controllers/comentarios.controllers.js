@@ -1,5 +1,25 @@
 const { Comment, User, Post } = require("../models");
 
+const obtenerComentario = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const comentario = await Comment.findByPk(id, {
+      include: [
+        { model: User, as: "usuario", attributes: { exclude: ["password"] } },
+        { model: Post, as: "post" },
+      ],
+    });
+
+    if (!comentario) {
+      return res.status(404).json({ message: "Comentario no encontrado" });
+    }
+
+    res.status(200).json(comentario);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener el comentario" });
+  }
+};
+
 // Crear un nuevo comentario
 const crearComentario = async (req, res) => {
   try {
@@ -26,24 +46,44 @@ const crearComentario = async (req, res) => {
   }
 };
 
+const actualizarComentario = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { contenido } = req.body;
+
+    const comentario = await Comment.findByPk(id);
+
+    if (!comentario) {
+      return res.status(404).json({ message: "Comentario no encontrado" });
+    }
+
+    await comentario.update({ contenido });
+    res.status(200).json(comentario);
+  } catch (error) {
+    res.status(500).json({ message: "Error al actualizar el comentario" });
+  }
+};
+
 // Eliminar un comentario
 const eliminarComentario = async (req, res) => {
   try {
     const { id } = req.params;
     const comentario = await Comment.findByPk(id);
-    
+
     if (!comentario) {
       return res.status(404).json({ message: "Comentario no encontrado" });
     }
 
     await comentario.destroy();
-    res.status(200).json({ message: "Comentario eliminado con éxito" });
+    res.status(200).json({ message: "Comentario eliminado" });
   } catch (error) {
     res.status(500).json({ message: "Error al eliminar el comentario" });
   }
 };
 
 module.exports = {
+  obtenerComentario,
   crearComentario,
+  actualizarComentario,
   eliminarComentario,
 };
