@@ -1,8 +1,9 @@
 const Joi = require("joi");
 
 const comentarioSchema = Joi.object({
-  contenido: Joi.string().min(1).required().messages({
+  contenido: Joi.string().trim().min(1).required().messages({
     "string.empty": "El comentario no puede estar vacio",
+    "string.min": "El comentario no puede estar vacio",
     "any.required": "El comentario no puede estar vacio",
   }),
   userId: Joi.number().integer().positive().required().messages({
@@ -15,4 +16,4 @@ const comentarioSchema = Joi.object({
   }),
 });
 
-module.exports = { comentarioSchema };
+module.exports = comentarioSchema;

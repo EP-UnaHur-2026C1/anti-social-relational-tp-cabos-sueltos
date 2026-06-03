@@ -15,4 +15,4 @@ const postSchema = Joi.object({
   tags: Joi.array().items(Joi.number().integer().positive()).optional(),
 });
 
-module.exports = { postSchema };
+module.exports = postSchema;

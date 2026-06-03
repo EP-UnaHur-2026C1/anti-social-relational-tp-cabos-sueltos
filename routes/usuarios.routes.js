@@ -7,12 +7,15 @@ const {
   eliminarUsuario,
 } = require("../controllers/usuarios.controllers.js");
 
+//Importo middleware de validación
+const validarUsuario = require("../middlewares/validarUsuario.js");
+
 const router = Router();
 
 router.get("/", obtenerUsuarios);
 router.get("/:id", obtenerUsuario);
-router.post("/", crearUsuario);
-router.put("/:id", actualizarUsuario);
+router.post("/", validarUsuario, crearUsuario);
+router.put("/:id", validarUsuario, actualizarUsuario);
 router.delete("/:id", eliminarUsuario);
 
 module.exports = router;

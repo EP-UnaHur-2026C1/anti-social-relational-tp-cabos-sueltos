@@ -14,6 +14,7 @@ const usuarioSchema = Joi.object({
     "string.min": "La contraseña debe tener al menos 6 caracteres",
     "any.required": "La contraseña es obligatoria",
   }),
+  
 });
 
-module.exports = { usuarioSchema };
+module.exports = usuarioSchema;

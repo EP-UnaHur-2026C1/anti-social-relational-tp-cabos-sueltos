@@ -25,6 +25,10 @@ const crearComentario = async (req, res) => {
   try {
     const { contenido, userId, postId } = req.body;
 
+    if (!contenido || !contenido.toString().trim()) {
+      return res.status(400).json({ message: "El comentario no puede estar vacio" });
+    }
+
     // Validaciones básicas de integridad referencial
     const usuarioExiste = await User.findByPk(userId);
     if (!usuarioExiste) {
@@ -50,6 +54,10 @@ const actualizarComentario = async (req, res) => {
   try {
     const { id } = req.params;
     const { contenido } = req.body;
+
+    if (!contenido || !contenido.toString().trim()) {
+      return res.status(400).json({ message: "El comentario no puede estar vacio" });
+    }
 
     const comentario = await Comment.findByPk(id);
 
