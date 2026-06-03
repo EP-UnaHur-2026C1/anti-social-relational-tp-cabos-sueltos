@@ -9,4 +9,4 @@ const tagSchema = Joi.object({
   }),
 });
 
-module.exports = { tagSchema };
+module.exports = tagSchema 
