@@ -12,7 +12,7 @@ const postSchema = Joi.object({
   imagenes: Joi.array().items(Joi.string().uri()).optional().messages({
     "string.uri": "Cada imagen debe ser una URL válida",
   }),
-  tags: Joi.array().items(Joi.number().integer().positive()).optional(),
+  etiquetas: Joi.array().items(Joi.number().integer().positive()).optional(),
 });
 
 module.exports = postSchema;

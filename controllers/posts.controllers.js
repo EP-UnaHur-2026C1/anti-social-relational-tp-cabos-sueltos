@@ -46,51 +46,11 @@ const obtenerPosts = async (req, res) => {
 
 const obtenerPost = async (req, res) => {
   try {
-    const { id } = req.params;
-
-    // Calculamos la fecha límite restando los meses configurados en el .env
-    const mesesLimite = parseInt(process.env.COMMENT_MAX_AGE_MONTHS) || 6;
-    const fechaLimite = new Date();
-    fechaLimite.setMonth(fechaLimite.getMonth() - mesesLimite);
-
-    const post = await Post.findByPk(id, {
-      include: [
-        { 
-          model: User, 
-          as: "usuario", 
-          attributes: { exclude: ["password"] } 
-        },
-        { 
-          model: Post_Images, 
-          as: "imagenes" 
-        },
-        { 
-          model: Tag, 
-          as: "etiquetas", 
-          through: { attributes: [] } 
-        },
-        { 
-          model: Comment, 
-          as: "comentarios",
-          where: {
-            fecha: {
-              [Op.gte]: fechaLimite // Solo comentarios posteriores o iguales a la fecha límite
-            }
-          },
-          required: false, // Si el post no tiene comentarios, lo muestra igual
-          include: [{ model: User, as: "usuario", attributes: ["id", "nickname"] }]
-        }
-      ]
-    });
-
-    if (!post) {
-      return res.status(404).json({ message: "Post no encontrado" });
-    }
-
-    res.status(200).json(post);
+    // El post ya viene cocinado, filtrado y con sus relaciones desde el middleware
+    return res.status(200).json(req.post);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error al obtener el post" });
+    return res.status(500).json({ message: "Error al obtener el post" });
   }
 };
 /*
@@ -115,11 +75,6 @@ const crearPost = async (req, res) => {
   try {
     // Esperamos recibir texto, userId, y opcionalmente un array de urls de imágenes y un array de ids de tags
     const { texto, userId, imagenes, tags } = req.body; 
-    
-    const usuario = await User.findByPk(userId);
-    if (!usuario) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
-    }
     
     // 1. Creamos el Post base
     const post = await Post.create({ texto, userId });
@@ -150,14 +105,12 @@ const crearPost = async (req, res) => {
   }
 };
 
+
 const actualizarPost = async (req, res) => {
   try {
     const { id } = req.params;
     const { texto, userId } = req.body;
-    const post = await Post.findByPk(id);
-    if (!post) {
-      return res.status(404).json({ message: "Post no encontrado" });
-    }
+    const post = req.post; // Obtenemos el post validado por el middleware
     await post.update(req.body);
     res.status(200).json(post);
   } catch (error) {
@@ -168,10 +121,7 @@ const actualizarPost = async (req, res) => {
 const eliminarPost = async (req, res) => {
   try {
     const { id } = req.params;
-    const post = await Post.findByPk(req.params.id);
-    if (!post) {
-      return res.status(404).json({ message: "Post no encontrado" });
-    }
+    const post = req.post; // Obtenemos el post validado por el middleware
     await post.destroy();
     res.status(200).json({ message: "Post eliminado" });
   } catch (error) {

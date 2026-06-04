@@ -2,21 +2,30 @@ const { Comment, User, Post } = require("../models");
 
 const obtenerComentario = async (req, res) => {
   try {
-    const { id } = req.params;
-    const comentario = await Comment.findByPk(id, {
+    //Tomamos el comentario que el middleware ya buscó y guardó en el req
+    const comentario = req.comentario;
+
+    // Usamos .reload() con await para traer dinámicamente al Usuario y al Post
+    await comentario.reload({
       include: [
-        { model: User, as: "usuario", attributes: { exclude: ["password"] } },
-        { model: Post, as: "post" },
+        {
+          model: User,
+          as: "usuario",
+          attributes: { exclude: ["password"] },
+        },
+        {
+          model: Post,
+          as: "post",
+        },
       ],
     });
-
-    if (!comentario) {
-      return res.status(404).json({ message: "Comentario no encontrado" });
-    }
-
-    res.status(200).json(comentario);
+    // Ahora que está inflado con la data completa, respondemos
+    return res.status(200).json(comentario);
   } catch (error) {
-    res.status(500).json({ message: "Error al obtener el comentario" });
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "Error al obtener el comentario completo" });
   }
 };
 
@@ -24,38 +33,21 @@ const obtenerComentario = async (req, res) => {
 const crearComentario = async (req, res) => {
   try {
     const { contenido, userId, postId } = req.body;
-
-    // Validaciones básicas de integridad referencial
-    const usuarioExiste = await User.findByPk(userId);
-    if (!usuarioExiste) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
-    }
-
-    const postExiste = await Post.findByPk(postId);
-    if (!postExiste) {
-      return res.status(404).json({ message: "Post no encontrado" });
-    }
-
-    // Creamos el comentario (la fecha se asigna sola por el CURRENT_TIMESTAMP)
+    //  Creamos el comentario directamente
     const nuevoComentario = await Comment.create({ contenido, userId, postId });
 
-    res.status(201).json(nuevoComentario);
+    //  Respondemos con el éxito de la creación
+    return res.status(201).json(nuevoComentario);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error al crear el comentario" });
+    return res.status(500).json({ message: "Error al crear el comentario" });
   }
 };
 
 const actualizarComentario = async (req, res) => {
   try {
-    const { id } = req.params;
     const { contenido } = req.body;
-
-    const comentario = await Comment.findByPk(id);
-
-    if (!comentario) {
-      return res.status(404).json({ message: "Comentario no encontrado" });
-    }
+    const comentario = req.comentario; // El comentario ya viene validado y adjuntado por el middleware validarComentarioId
 
     await comentario.update({ contenido });
     res.status(200).json(comentario);
@@ -67,13 +59,7 @@ const actualizarComentario = async (req, res) => {
 // Eliminar un comentario
 const eliminarComentario = async (req, res) => {
   try {
-    const { id } = req.params;
-    const comentario = await Comment.findByPk(id);
-
-    if (!comentario) {
-      return res.status(404).json({ message: "Comentario no encontrado" });
-    }
-
+    const comentario = req.comentario; // El comentario ya viene validado y adjuntado por el middleware validarComentarioId
     await comentario.destroy();
     res.status(200).json({ message: "Comentario eliminado" });
   } catch (error) {

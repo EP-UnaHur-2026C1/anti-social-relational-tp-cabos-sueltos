@@ -9,13 +9,14 @@ const {
 
 //Importo middleware de validación
 const validarUsuario = require("../middlewares/validarUsuario.js");
+const validarUsuarioId = require("../middlewares/validarUsuarioId.js");
 
 const router = Router();
 
 router.get("/", obtenerUsuarios);
-router.get("/:id", obtenerUsuario);
+router.get("/:id", validarUsuarioId, obtenerUsuario);
 router.post("/", validarUsuario, crearUsuario);
-router.put("/:id", validarUsuario, actualizarUsuario);
-router.delete("/:id", eliminarUsuario);
+router.put("/:id", validarUsuarioId, validarUsuario, actualizarUsuario);
+router.delete("/:id", validarUsuarioId, eliminarUsuario);
 
 module.exports = router;
