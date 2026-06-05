@@ -11,12 +11,12 @@ const validarTag = require("../middlewares/validarTag.js");
 const {
   validarExiteTagConPosts,
   validarNombreTag,
-  validarPostYTag
+  validarPostYTag,
 } = require("../middlewares/validarTagId.js");
 
 router.get("/", obtenerTags);
 router.post("/", validarNombreTag, crearTag);
 router.get("/:id/posts", validarExiteTagConPosts, obtenerPostsPorTag);
-router.post("/:id/posts/:postId", validarPostYTag, asignarTagAPost);
+router.post("/posts/:postId/tags/:id", validarPostYTag, asignarTagAPost);
 
 module.exports = router;
