@@ -3,6 +3,8 @@ const express = require("express");
 const app = express();
 const db = require("../models");
 const PORT = process.env.PORT || 3000;
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("../helpers/swagger");
 
 const usuariosRouter = require("../routes/usuarios.routes.js");
 const postsRouter = require("../routes/posts.routes.js");
@@ -16,6 +18,7 @@ app.use("/posts", postsRouter);
 app.use("/postImages", postImagesRouter);
 app.use("/comentarios", comentariosRouter);
 app.use("/tags", tagsRouter);
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Levantamos el servidor usando la variable PORT
 const start = async () => {
