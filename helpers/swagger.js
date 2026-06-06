@@ -2,7 +2,7 @@ const swaggerJsdoc = require("swagger-jsdoc");
 
 const options = {
   definition: {
-    openapi: "3.0.0",
+    openapi: "3.0.3",
     info: {
       title: "Red Anti-Social",
       version: "1.0.0",
@@ -10,7 +10,7 @@ const options = {
     },
   },
 
-  apis: ["./docs/*.yaml"],
+  apis: ["./docs/*.yml"],
 };
 
 const swaggerSpec = swaggerJsdoc(options);

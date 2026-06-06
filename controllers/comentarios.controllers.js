@@ -29,7 +29,6 @@ const obtenerComentario = async (req, res) => {
   }
 };
 
-// Crear un nuevo comentario
 const crearComentario = async (req, res) => {
   try {
     const { contenido, userId, postId } = req.body;

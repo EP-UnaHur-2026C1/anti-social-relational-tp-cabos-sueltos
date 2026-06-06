@@ -4,7 +4,7 @@ const { Op } = require("sequelize"); // Filtro de fechas
 /*Para cumplir con "los comentarios más antiguos que X meses no se muestren", calculamos la fecha límite restando los meses (que vienen de process.env.COMMENT_MAX_AGE_MONTHS, por ejemplo 6) a la fecha de hoy, y filtramos con un [Op.gte] (mayor o igual)*/
 const obtenerPosts = async (req, res) => {
   try {
-    // Leemos la variable de entorno, si no existe por defecto usamos 6 meses
+    // Leemos la variable de entorno para ocultar automáticamente los comentarios viejos, si no existe por defecto usamos 6 meses
     const mesesLimite = parseInt(process.env.COMMENT_MAX_AGE_MONTHS) || 6;
     const fechaLimite = new Date();
     fechaLimite.setMonth(fechaLimite.getMonth() - mesesLimite);

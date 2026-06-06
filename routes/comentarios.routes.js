@@ -12,12 +12,15 @@ const validarUsuarioId = require("../middlewares/validarUsuarioId.js");
 const validarPostId = require("../middlewares/validarPostId.js");
 const validarComentarioId = require("../middlewares/validarComentarioId.js");
 
-
-
 router.get("/:id", validarComentarioId, obtenerComentario);
-router.post("/", validarComentario,validarUsuarioId, validarPostId, crearComentario);
+router.post(
+  "/",
+  validarComentario,
+  validarUsuarioId,
+  validarPostId,
+  crearComentario,
+);
 router.put("/:id", validarComentarioId, actualizarComentario);
 router.delete("/:id", validarComentarioId, eliminarComentario);
 
 module.exports = router;
-  

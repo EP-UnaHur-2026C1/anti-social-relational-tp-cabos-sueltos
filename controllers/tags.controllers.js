@@ -42,7 +42,7 @@ const asignarTagAPost = async (req, res) => {
   try {
     const { id, postId } = req.params; // O de req.params si vienen por la URL
 
-    // 1. Buscamos el post y el tag en la base de datos
+    // Buscamos el post y el tag en la base de datos
     const post = await Post.findByPk(Number(postId));
     const tag = await Tag.findByPk(Number(id));
 
@@ -51,7 +51,7 @@ const asignarTagAPost = async (req, res) => {
       return res.status(404).json({ message: "Post o Tag no encontrado" });
     }
 
-    // 2. Asignamos el tag al post (Sequelize hace el INSERT en Post_Tags por detrás)
+    // Asignamos el tag al post 
     await post.addEtiqueta(tag);
 
     return res.status(200).json({ message: "Tag asignado con éxito al post" });

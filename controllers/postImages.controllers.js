@@ -3,10 +3,7 @@ const { Post, User, Post_Images } = require("../models");
 const obtenerPostImage = async (req, res) => {
   try {
     const { postId } = req.params;
-    const post = await Post.findByPk(postId);
-    if (!post) {
-      return res.status(404).json({ message: "Post no encontrado" });
-    }
+    const post =  req.post
     const imagenes = await Post_Images.findAll({
       where: { postId: postId },
     });
@@ -20,10 +17,7 @@ const crearPostImage = async (req, res) => {
   try {
     const { postId } = req.params;
     const { imageUrl } = req.body;
-    const post = await Post.findByPk(postId);
-    if (!post) {
-      return res.status(404).json({ message: "Post no encontrado" });
-    }
+    const post =  req.post
     const imagen = await Post_Images.create({
       postId: postId,
       imageUrl: imageUrl,
@@ -37,10 +31,7 @@ const crearPostImage = async (req, res) => {
 const eliminarPostImage = async (req, res) => {
   try {
     const { id } = req.params;
-    const imagen = await Post_Images.findByPk(id);
-    if (!imagen) {
-      return res.status(404).json({ message: "Imagen no encontrado" });
-    }
+    const imagen = req.imagen
     await imagen.destroy();
     res.status(200).json({ message: "Imagen eliminada" });
   } catch (error) {
